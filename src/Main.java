@@ -1,6 +1,8 @@
 
 import scanner.*;
 import java.io.*;
+import java.util.List;
+import parser.*;
 
 class Main {
     
@@ -21,17 +23,16 @@ class Main {
 
         String source= sb.toString();
         Scanner scanner = new Scanner(source);
+        List<Token> tokens = scanner.scan();
 
-        int lineNum = 1;
-        for (Token t: scanner.scan()) {
-            if (t.getLine() > lineNum) {
-                lineNum = t.getLine();
-                System.out.println();
-            }
-            System.out.print(t);
-            System.out.print(", ");            
+        Parser parser = new Parser(tokens);
+        try {
+            Expr parsed = parser.parse();
+            System.out.println((new ExprPrinter()).convertString(parsed));
+        } catch (ParserException e) {
+            System.out.println(e);
         }
-        System.out.println();
+
         reader.close();
     }
 }
