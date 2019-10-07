@@ -1,0 +1,37 @@
+<project name="scanner" basedir="." default="main">
+
+    <property name="src.dir" value="src"/>
+
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/jar"/>
+
+    <property name="main-class"  value="Main"/>
+
+    <property name="jar.path" value="${jar.dir}/${ant.project.name}.jar"/>
+
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${classes.dir}" debug="true"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="${build.dir}"/>
+        <jar destfile="${jar.path}" basedir="${classes.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="${main-class}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="${jar.path}" fork="true"/>
+    </target>
+
+    <target name="clean-build" depends="clean, jar"/>
+    <target name="main" depends="clean, jar"/>
+</project>
