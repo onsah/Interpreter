@@ -1,4 +1,4 @@
-<project name="scanner" basedir="." default="main">
+<project name="parser" basedir="." default="main">
 
     <property name="src.dir" value="src"/>
 
