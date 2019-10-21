@@ -11,7 +11,8 @@ class Main {
     
     public static void main(String[] args) throws Exception {
         if (args.length < 1) {
-            System.out.println("Usage: java program [file-path]");
+            repl();
+            // System.out.println("Usage: java program [file-path]");
             return;
         }
         String path = args[0];
@@ -40,5 +41,25 @@ class Main {
         }
 
         reader.close();
+    }
+
+    static void repl() {
+        java.util.Scanner scan = new java.util.Scanner(System.in); 
+        Interpreter interpreter = new Interpreter();
+        while (true) {
+            String source = scan.nextLine();
+            Scanner scanner = new Scanner(source);
+            List<Token> tokens = scanner.scan();
+
+            Parser parser = new Parser(tokens);
+            try {
+                Expr parsed = parser.parse();
+                // System.out.println((new ExprPrinter()).convertString(parsed));
+                Value val = interpreter.evaluate(parsed);
+                System.out.println(val);
+            } catch (ParserException e) {
+                System.out.println("Error: " + e);
+            }
+        }
     }
 }

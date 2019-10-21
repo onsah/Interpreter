@@ -48,6 +48,8 @@ public class Interpreter implements Expr.Visitor<Value> {
             case PLUS: 
                 if ((left instanceof Value.Number) && (right instanceof Value.Number)) {
                     return new Value.Number(((Value.Number) left).val + ((Value.Number) right).val);
+                } else if ((left instanceof Value.String) && (right instanceof Value.String)) {
+                    return new Value.String(((Value.String) left).val + ((Value.String) right).val);
                 } else {
                     return null;
                 }
