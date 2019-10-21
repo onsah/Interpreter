@@ -17,12 +17,24 @@ public class Parser {
         return expr();   
     }
 
-    private Expr expr() throws ParserException { return binary(); }
+    private Expr expr() throws ParserException { 
+        return binary(); 
+    }
 
     private Expr binary() throws ParserException {
+        Expr expr = factor();
+        Token op = null;
+        while ((op = match(PLUS, MINUS)) != null) {
+            Expr right = factor();
+            expr = new Expr.Binary(op, expr, right);
+        }
+        return expr;
+    }
+
+    private Expr factor() throws ParserException {
         Expr expr = unary();
         Token op = null;
-        while ((op = match(PLUS, MINUS, STAR, SLASH, LESS, GREATER, AND, OR)) != null) {
+        while ((op = match(STAR, SLASH)) != null) {
             Expr right = unary();
             expr = new Expr.Binary(op, expr, right);
         }
