@@ -33,7 +33,7 @@ public class Scanner {
                 char c = advance();
                 switch (c) {
                     case '"': 
-                        return string(start);
+                        return string(start + 1);
                     case '(':
                         return makeToken(TokenType.LEFT_PAREN, start, cursor);
                     case ')':
@@ -102,7 +102,7 @@ public class Scanner {
         while (!match('"')) {
             advance();
         }
-        return makeToken(TokenType.STRING, start, cursor);
+        return makeToken(TokenType.STRING, start, cursor - 1);
     }
 
     private Token number(int start) throws ScanException {
@@ -132,7 +132,10 @@ public class Scanner {
     }
 
     private char peek() {
-        return this.source.charAt(cursor);
+        if (!isEof())
+            return this.source.charAt(cursor);
+        else
+            return '\n';
     }
 
     private char advance() throws ScanException {
