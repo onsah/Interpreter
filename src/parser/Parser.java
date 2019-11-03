@@ -6,6 +6,8 @@ import scanner.Token.TokenType;
 import static scanner.Token.TokenType.*;
 import java.util.List;
 
+import java.util.ArrayList;
+
 public class Parser {
     
     private List<Token> tokens;
@@ -13,12 +15,42 @@ public class Parser {
 
     public Parser(List<Token> t) { tokens = t; }
 
-    public Expr parse() throws ParserException {
-        return expr();   
+    public Stmt parse() throws ParserException {
+        ArrayList<Stmt> stmts = new ArrayList<>();
+        while (tokens.get(cursor).getType() != EOF) {
+            stmts.add(stmt());
+        }
+        return new Stmt.Block(stmts);
+    }
+
+    private Stmt stmt() throws ParserException {
+        Token tok = advance();
+        switch (tok.getType()) {
+            case VAR:
+                return varStmt();
+            case PRINT:
+                return printStmt();
+            default:
+                throw new ParserException(tok);
+        }
+    }
+
+    private Stmt varStmt() throws ParserException {
+        Token name = expect(NAME);
+        expect(EQUAL);
+        Expr value = expr();
+        expect(SC);
+        return new Stmt.Declaration(name.getLexeme(), value);
+    }
+
+    private Stmt printStmt() throws ParserException {
+        Expr value = expr();
+        expect(SC);
+        return new Stmt.Print(value);
     }
 
     private Expr expr() throws ParserException { 
-        return binary(); 
+        return binary();
     }
 
     private Expr binary() throws ParserException {
@@ -66,6 +98,8 @@ public class Parser {
     private Expr literal() throws ParserException {
         Token tok = advance();
         switch (tok.getType()) {
+            case NAME:
+                return new Expr.Ident(tok.getLexeme());
             case NUMBER:
                 return new Expr.Literal(Integer.valueOf(tok.getLexeme()));
             case STRING:
@@ -114,5 +148,13 @@ public class Parser {
                 return t;
         }
         return null;
+    }
+
+    private Token expect(TokenType type) throws ParserException {
+        if (tokens.get(cursor).getType() == type) {
+            return advance();
+        } else {
+            throw new ParserException(tokens.get(cursor));
+        }
     }
 }

@@ -1,18 +1,44 @@
 package interpreter;
 
 
+import java.util.HashMap;
+
 import parser.Expr;
-import parser.Expr.Literal;
-import parser.Expr.Unary;
-import parser.Expr.Binary;
-import parser.Expr.Grouping;
+import parser.Expr.*;
+import parser.Stmt.*;
+import parser.Stmt;
 import scanner.Token;
 import scanner.Token.TokenType;
 
-public class Interpreter implements Expr.Visitor<Value> {
+public class Interpreter implements Expr.Visitor<Value>, Stmt.Visitor<Void> {
+
+    private HashMap<String, Value> env = new HashMap<>();
+
+    public Void evaluate(Stmt stmt) {
+        return stmt.accept(this);
+    }
 
     public Value evaluate(Expr expr) {
         return expr.accept(this);
+    }
+
+    public Void visitDeclaration(Declaration declStmt) {
+        Value val = evaluate(declStmt.value);
+        env.put(declStmt.name, val);
+        return null;
+    }
+
+    public Void visitPrint(Print print) {
+        Value val = evaluate(print.value);
+        System.out.println(val);
+        return null;
+    }
+
+    public Void visitBlock(Block block) {
+        for (Stmt s: block.stmts) {
+            evaluate(s);
+        }
+        return null;
     }
 
     public Value visitLiteral(Literal lit) {
@@ -83,5 +109,13 @@ public class Interpreter implements Expr.Visitor<Value> {
 
     public Value visitGrouping(Grouping gr) {
         return gr.expr.accept(this);
+    }
+
+    public Value visitIdent(Ident ident) {
+        if (env.containsKey(ident.name)) {
+            return env.get(ident.name);
+        } else {
+            return null;
+        }
     }
 }

@@ -15,6 +15,8 @@ public class Token {
         KEYWORDS.put("true", TokenType.TRUE);
         KEYWORDS.put("false", TokenType.FALSE);
         KEYWORDS.put("nil", TokenType.NIL);
+        KEYWORDS.put("var", TokenType.VAR);
+        KEYWORDS.put("print", TokenType.PRINT);
     }
 
     public Token(TokenType t, String l, int ln) {
@@ -75,7 +77,14 @@ public class Token {
         OR,
         LEFT_PAREN,
         RIGHT_PAREN,
-        
+
+        // Keywords
+        VAR,
+        PRINT,
+
+        // Other tokens
+        SC,
+
         // End of file
         EOF,
     }

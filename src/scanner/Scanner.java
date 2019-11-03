@@ -50,6 +50,8 @@ public class Scanner {
                         return makeToken(TokenType.AND, start, cursor);
                     case '|':
                         return makeToken(TokenType.OR, start, cursor);
+                    case ';':
+                        return makeToken(TokenType.SC, start, cursor);
                     case '>':
                         if (match('=')) {
                             return makeToken(TokenType.GREATER_EQ, start, cursor);

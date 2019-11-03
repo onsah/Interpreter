@@ -32,10 +32,10 @@ class Main {
         Parser parser = new Parser(tokens);
         Interpreter interpreter = new Interpreter();
         try {
-            Expr parsed = parser.parse();
+            Stmt parsed = parser.parse();
             // System.out.println((new ExprPrinter()).convertString(parsed));
-            Value val = interpreter.evaluate(parsed);
-            System.out.println("Evaluated: " + val.toString());
+            interpreter.evaluate(parsed);
+            // System.out.println("Evaluated: " + val.toString());
         } catch (ParserException e) {
             System.out.println(e);
         }
@@ -53,10 +53,10 @@ class Main {
 
             Parser parser = new Parser(tokens);
             try {
-                Expr parsed = parser.parse();
+                Stmt parsed = parser.parse();
                 // System.out.println((new ExprPrinter()).convertString(parsed));
-                Value val = interpreter.evaluate(parsed);
-                System.out.println(val);
+                interpreter.evaluate(parsed);
+                // System.out.println(val);
             } catch (ParserException e) {
                 System.out.println("Error: " + e);
             }

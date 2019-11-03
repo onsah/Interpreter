@@ -9,6 +9,7 @@ public abstract class Expr {
         T visitUnary(Unary un);
         T visitBinary(Binary bin);
         T visitGrouping(Grouping gr);
+        T visitIdent(Ident ident);
     }
 
     public abstract <T> T accept(Visitor<T> visitor);
@@ -52,5 +53,13 @@ public abstract class Expr {
         public Grouping(Expr e) { expr = e; }
 
         public <T> T accept(Visitor<T> v) { return v.visitGrouping(this); }
+    }
+
+    public static class Ident extends Expr {
+        public final java.lang.String name;
+
+        public Ident(java.lang.String n) { name = n; }
+
+        public <T> T accept(Visitor<T> v) { return v.visitIdent(this); }
     }
 } 
